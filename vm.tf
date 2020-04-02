@@ -30,7 +30,7 @@ resource "azurerm_network_interface" "example2" {
     name                          = "ipconfig1"
     subnet_id                     = "dc47-app-subnet" 
     private_ip_address_allocation  = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.example.id
+    public_ip_address_id          = azurerm_public_ip.example2.id
   }
 }
 
@@ -53,7 +53,7 @@ resource "azurerm_virtual_machine" "example" {
   name                  = "drsnap0"  
   location              = "West US"
   resource_group_name   = "TFResourceGroup"
-  network_interface_ids = [azurerm_network_interface.example.id]
+  network_interface_ids = [azurerm_network_interface.example2.id]
   vm_size               = "Standard_B1s"
   delete_os_disk_on_termination = true
   delete_data_disks_on_termination = true
