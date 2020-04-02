@@ -60,7 +60,7 @@ resource "azurerm_virtual_machine" "drsnap0" {
   name                  = "Enter AzureVM Name"  
   location              = "West US2"
   resource_group_name   = "TFResourceGroup"
-  network_interface_ids = [azurerm_network_interface.drnsap0-nic.id]
+  network_interface_ids = [azurerm_network_interface.drsnap0-nic.id]
   vm_size               = "Standard_B1s"
   delete_os_disk_on_termination = true
   delete_data_disks_on_termination = true
