@@ -31,8 +31,8 @@ resource "azurerm_subnet" "tfsubnet" {
 }
 
 #Deploy Public IP
-resource "azurerm_public_ip" "pubip1" {
-  name                = "pubip1"
+resource "azurerm_public_ip" "pubip2" {
+  name                = "pubip2"
   location            = "West US2"
   resource_group_name = "TFResourceGroup"
   allocation_method   = "Dynamic"
@@ -49,7 +49,7 @@ resource "azurerm_network_interface" "drsnap0-nic" {
     name                          = "ipconfig1"
     subnet_id                     = azurerm_subnet.tfsubnet.id 
     private_ip_address_allocation  = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.pubip1.id
+    public_ip_address_id          = azurerm_public_ip.pubip2.id
   }
 }
 
