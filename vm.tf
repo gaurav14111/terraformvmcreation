@@ -12,8 +12,8 @@ terraform{
 }
 
 #Deploy Public IP
-resource "azurerm_public_ip" "example" {
-  name                = "pubip1"
+resource "azurerm_public_ip" "example2" {
+  name                = "pubip2"
   location            = "West US"
   resource_group_name = "TFResourceGroup"
   allocation_method   = "Dynamic"
@@ -21,7 +21,7 @@ resource "azurerm_public_ip" "example" {
 }
 
 #Create NIC
-resource "azurerm_network_interface" "example" {
+resource "azurerm_network_interface" "example2" {
   name                = "Enter name for this NIC"  
   location            = "West US"
   resource_group_name = "TFResourceGroup"
