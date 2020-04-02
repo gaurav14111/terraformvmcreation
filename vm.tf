@@ -2,6 +2,15 @@ provider "azurerm" {
     version = 1.38
     }
 
+terraform{
+    backend "azurerm"{
+        resource_group_name="Terraform"
+        storage_account_name="tfstatefileterraform"
+        container_name ="tfstatefile"
+        key ="terraformvmcreation.tfstate"
+
+    }
+}
 # Create virtual network
 resource "azurerm_virtual_network" "TFNet" {
     name                = "TFVnet"
