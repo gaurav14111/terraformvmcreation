@@ -55,6 +55,20 @@ resource "azurerm_network_interface" "drsnap0-nic" {
 
 
 
+#Create Boot Diagnostic Account
+resource "azurerm_storage_account" "sa" {
+  name                     = "azurebootdiagnostictest" 
+  resource_group_name      = "TFResourceGroup"
+  location                 = "West US2"
+   account_tier            = "Standard"
+   account_replication_type = "LRS"
+
+   tags = {
+    environment = "Boot Diagnostic Storage"
+    CreatedBy = "Admin"
+   }
+  }
+
 #Create Virtual Machine
 resource "azurerm_virtual_machine" "drsnap0" {
   name                  = "Enter AzureVM Name"  
