@@ -1,59 +1,57 @@
 provider "azurerm" {
     version = 1.38
     }
-terraform{
-    backend "azurerm"{
-        resource_group_name="Terraform"
-        storage_account_name="tfstatefileterraform"
-        container_name ="tfstatefile"
-        key ="terraformvmcreation.tfstate"
 
+# Create virtual network
+resource "azurerm_virtual_network" "TFNet" {
+    name                = "TFVnet"
+    address_space       = ["10.0.0.0/16"]
+    location            = "West US2"
+    resource_group_name = "TFResourceGroup"
+
+    tags = {
+        environment = "Terraform VNET"
     }
+}
+# Create subnet
+resource "azurerm_subnet" "tfsubnet" {
+    name                 = "default"
+    resource_group_name = "TFResourceGroup"
+    virtual_network_name = azurerm_virtual_network.TFNet.name
+    address_prefix       = "10.0.1.0/24"
 }
 
 #Deploy Public IP
-resource "azurerm_public_ip" "example2" {
-  name                = "pubip2"
-  location            = "West US"
+resource "azurerm_public_ip" "pubip1" {
+  name                = "pubip1"
+  location            = "West US2"
   resource_group_name = "TFResourceGroup"
   allocation_method   = "Dynamic"
   sku                 = "Basic"
 }
 
 #Create NIC
-resource "azurerm_network_interface" "example2" {
-  name                = "Enter name for this NIC"  
-  location            = "West US"
+resource "azurerm_network_interface" "drsnap0-nic" {
+  name                = "drnsap0-nic"  
+  location            = "West US2"
   resource_group_name = "TFResourceGroup"
 
     ip_configuration {
     name                          = "ipconfig1"
-    subnet_id                     = "/dc47-app-vnet/dc47-app-subnet" 
+    subnet_id                     = azurerm_subnet.tfsubnet.id 
     private_ip_address_allocation  = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.example2.id
+    public_ip_address_id          = azurerm_public_ip.pubip1.id
   }
 }
 
-#Create Boot Diagnostic Account
-resource "azurerm_storage_account" "sa" {
-  name                     = "azurebootdiagnostictest" 
-  resource_group_name      = "TFResourceGroup"
-  location                 = "West US"
-   account_tier            = "Standard"
-   account_replication_type = "LRS"
 
-   tags = {
-    environment = "Boot Diagnostic Storage"
-    CreatedBy = "Admin"
-   }
-  }
 
 #Create Virtual Machine
-resource "azurerm_virtual_machine" "example" {
-  name                  = "drsnap0"  
-  location              = "West US"
+resource "azurerm_virtual_machine" "drsnap0" {
+  name                  = "Enter AzureVM Name"  
+  location              = "West US2"
   resource_group_name   = "TFResourceGroup"
-  network_interface_ids = [azurerm_network_interface.example2.id]
+  network_interface_ids = [azurerm_network_interface.drnsap0-nic.id]
   vm_size               = "Standard_B1s"
   delete_os_disk_on_termination = true
   delete_data_disks_on_termination = true
@@ -74,7 +72,7 @@ resource "azurerm_virtual_machine" "example" {
   }
 
   os_profile {
-    computer_name  = "drsnap0"
+    computer_name  = "Enter Server Name"
     admin_username = "vmadmin"
     admin_password = "Password12345!"
   }
@@ -85,6 +83,6 @@ resource "azurerm_virtual_machine" "example" {
 
 boot_diagnostics {
         enabled     = "true"
-        storage_uri = azurerm_storage_account.sa.primary_blob_endpoint
+        storage_uri = "azurebootdiagnostictest"
     }
 }
