@@ -28,7 +28,7 @@ resource "azurerm_network_interface" "example2" {
 
     ip_configuration {
     name                          = "ipconfig1"
-    subnet_id                     = "dc47-app-subnet" 
+    subnet_id                     = "/dc47-app-vnet/dc47-app-subnet" 
     private_ip_address_allocation  = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.example2.id
   }
