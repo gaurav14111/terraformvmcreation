@@ -38,7 +38,13 @@ resource "azurerm_public_ip" "pubip2" {
   allocation_method   = "Dynamic"
   sku                 = "Basic"
 }
-
+resource "azurerm_public_ip" "pubip3" {
+  name                = "pubip3"
+  location            = "West US2"
+  resource_group_name = "TFResourceGroup"
+  allocation_method   = "Dynamic"
+  sku                 = "Basic"
+}
 #Create NIC
 resource "azurerm_network_interface" "drsnap0-nic" {
   name                = "drnsap0-nic"  
@@ -52,7 +58,18 @@ resource "azurerm_network_interface" "drsnap0-nic" {
     public_ip_address_id          = azurerm_public_ip.pubip2.id
   }
 }
+resource "azurerm_network_interface" "drsnap1-nic" {
+  name                = "drnsap1-nic"  
+  location            = "West US2"
+  resource_group_name = "TFResourceGroup"
 
+    ip_configuration {
+    name                          = "ipconfig1"
+    subnet_id                     = azurerm_subnet.tfsubnet.id 
+    private_ip_address_allocation  = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.pubip3.id
+  }
+}
 
 
 #Create Boot Diagnostic Account
@@ -96,6 +113,46 @@ resource "azurerm_virtual_machine" "drsnap0" {
 
   os_profile {
     computer_name  = "drsnap0"
+    admin_username = "vmadmin"
+    admin_password = "Password12345!"
+  }
+
+  os_profile_linux_config {
+    disable_password_authentication = false
+  }
+
+boot_diagnostics {
+        enabled     = "true"
+        storage_uri = azurerm_storage_account.sa.primary_blob_endpoint
+    }
+}
+
+resource "azurerm_virtual_machine" "drsnap1" {
+  name                  = "drsnap1"  
+  location              = "West US2"
+  resource_group_name   = "TFResourceGroup"
+  network_interface_ids = [azurerm_network_interface.drsnap1-nic.id]
+  vm_size               = "Standard_B1s"
+  delete_os_disk_on_termination = true
+  delete_data_disks_on_termination = true
+
+  storage_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "16.04-LTS"
+    version   = "latest"
+  }
+
+  storage_os_disk {
+    name              = "osdisk1"
+    disk_size_gb      = "40"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Standard_LRS"
+  }
+
+  os_profile {
+    computer_name  = "drsnap1"
     admin_username = "vmadmin"
     admin_password = "Password12345!"
   }
