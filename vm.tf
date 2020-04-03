@@ -71,7 +71,7 @@ resource "azurerm_storage_account" "sa" {
 
 #Create Virtual Machine
 resource "azurerm_virtual_machine" "drsnap0" {
-  name                  = "Enter AzureVM Name"  
+  name                  = "drsnap0"  
   location              = "West US2"
   resource_group_name   = "TFResourceGroup"
   network_interface_ids = [azurerm_network_interface.drsnap0-nic.id]
@@ -95,7 +95,7 @@ resource "azurerm_virtual_machine" "drsnap0" {
   }
 
   os_profile {
-    computer_name  = "Enter Server Name"
+    computer_name  = "drsnap0"
     admin_username = "vmadmin"
     admin_password = "Password12345!"
   }
@@ -106,6 +106,6 @@ resource "azurerm_virtual_machine" "drsnap0" {
 
 boot_diagnostics {
         enabled     = "true"
-        storage_uri = "azurebootdiagnostictest"
+        storage_uri = azurerm_storage_account.sa.primary_blob_endpoint
     }
 }
