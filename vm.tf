@@ -143,7 +143,7 @@ resource "azurerm_virtual_machine" "drsnap1" {
     version   = "latest"
   }
 
-  storage_os_disk2 {
+  storage_os_disk {
     name              = "osdisk2"
     disk_size_gb      = "40"
     caching           = "ReadWrite"
