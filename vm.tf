@@ -88,7 +88,7 @@ resource "azurerm_virtual_machine" "drsnap0" {
 
   storage_os_disk {
     name              = "osdisk1"
-    disk_size_gb      = "128"
+    disk_size_gb      = "20"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
